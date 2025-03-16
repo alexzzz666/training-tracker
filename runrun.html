@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简易半马训练跟踪器</title>
+    <style>
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        h1, h2, h3 {
+            color: #2980b9;
+        }
+        
+        h1 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            border-bottom-color: #3498db;
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .training-day {
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .training-day.active {
+            background-color: #e1f5fe;
+            border-left-color: #2ecc71;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-success {
+            background-color: #2ecc71;
+        }
+        
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>简易半马训练跟踪器</h1>
+            
+            <div class="tabs">
+                <div class="tab active" id="tab-plan" onclick="showTab('plan')">训练计划</div>
+                <div class="tab" id="tab-log" onclick="showTab('log')">记录训练</div>
+                <div class="tab" id="tab-history" onclick="showTab('history')">历史记录</div>
+            </div>
+            
+            <div id="plan-content" class="tab-content active">
+                <h2>本周训练计划</h2>
+                
+                <div class="form-group">
+                    <label for="week-select">选择训练周</label>
+                    <select id="week-select" onchange="updatePlan()">
+                        <option value="1">第1周 - 建立基础</option>
+                        <option value="2">第2周 - 建立基础</option>
+                        <option value="3">第3周 - 建立基础</option>
+                        <option value="4">第4周 - 建立基础</option>
+                        <option value="5">第5周 - 提高耐力</option>
+                        <option value="6">第6周 - 提高耐力</option>
+                        <option value="7">第7周 - 提高耐力</option>
+                        <option value="8">第8周 - 提高耐力</option>
+                        <option value="9">第9周 - 冲刺准备</option>
+                        <option value="10">第10周 - 冲刺准备</option>
+                        <option value="11">第11周 - 冲刺准备</option>
+                        <option value="12">第12周 - 冲刺准备</option>
+                    </select>
+                </div>
+                
+                <div id="week-plan">
+                    <!-- 训练计划将在这里显示 -->
+                </div>
+            </div>
+            
+            <div id="log-content" class="tab-content">
+                <h2>记录训练</h2>
+                
+                <form id="training-form">
+                    <div class="form-group">
+                        <label for="training-date">日期</label>
+                        <input type="date" id="training-date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="training-type">训练类型</label>
+                        <select id="training-type" required>
+                            <option value="">选择训练类型</option>
+                            <option value="run">跑步</option>
+                            <option value="tennis">网球</option>
+                            <option value="strength">力量训练</option>
+                            <option value="rest">休息日</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="training-distance">距离 (公里)</label>
+                        <input type="number" id="training-distance" step="0.1" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="training-duration">时间 (分钟)</label>
+                        <input type="number" id="training-duration" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="training-notes">备注</label>
+                        <textarea id="training-notes" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="button" class="btn-success" onclick="saveTraining()">保存训练记录</button>
+                </form>
+            </div>
+            
+            <div id="history-content" class="tab-content">
+                <h2>训练历史</h2>
+                <div id="history-list">
+                    <p id="no-records">暂无训练记录</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let trainingLogs = [];
+        
+        // 初始化
+        window.onload = function() {
+            // 从本地存储加载训练记录
+            const savedLogs = localStorage.getItem('trainingLogs');
+            if (savedLogs) {
+                trainingLogs = JSON.parse(savedLogs);
+            }
+            
+            // 设置今天的日期
+            document.getElementById('training-date').valueAsDate = new Date();
+            
+            // 更新训练计划和历史记录
+            updatePlan();
+            updateHistory();
+        };
+        
+        // 切换标签
+        function showTab(tabId) {
+            // 移除所有标签的active类
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 隐藏所有标签内容
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 激活选中的标签及其内容
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            document.getElementById(`${tabId}-content`).classList.add('active');
+        }
+        
+        // 更新训练计划
+        function updatePlan() {
+            const weekSelect = document.getElementById('week-select');
+            const week = parseInt(weekSelect.value);
+            const weekPlan = document.getElementById('week-plan');
+            
+            // 获取当前周的训练计划
+            const planData = getTrainingPlanForWeek(week);
+            
+            // 清空现有计划
+            weekPlan.innerHTML = '';
+            
+            // 添加新计划
+            const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+            
+            for (let i = 0; i < days.length; i++) {
+                const day = days[i];
+                const training = planData[i];
+                
+                const trainingDay = document.createElement('div');
+                trainingDay.className = 'training-day';
+                
+                // 检查今天是否是这个训练日
+                const today = new Date();
+                if (today.getDay() === (i + 1) % 7) {
+                    trainingDay.classList.add('active');
+                }
+                
+                trainingDay.innerHTML = `
+                    <h3>${day}: ${training.typeText}</h3>
+                    <p>${training.details}</p>
+                    <p>时间/距离: ${training.duration}</p>
+                    <p>强度: ${training.intensity}</p>
+                `;
+                
+                weekPlan.appendChild(trainingDay);
+            }
+        }
+        
+        // 保存训练记录
+        function saveTraining() {
+            const date = document.getElementById('training-date').value;
+            const type = document.getElementById('training-type').value;
+            const distance = parseFloat(document.getElementById('training-distance').value) || 0;
+            const duration = parseFloat(document.getElementById('training-duration').value) || 0;
+            const notes = document.getElementById('training-notes').value;
+            
+            if (!date || !type) {
+                alert('请至少填写日期和训练类型');
+                return;
+            }
+            
+            // 创建新的训练记录
+            const newTraining = {
+                id: Date.now(),
+                date,
+                type,
+                distance,
+                duration,
+                notes,
+                week: parseInt(document.getElementById('week-select').value)
+            };
+            
+            // 添加到记录数组
+            trainingLogs.push(newTraining);
+            
+            // 保存到本地存储
+            localStorage.setItem('trainingLogs', JSON.stringify(trainingLogs));
+            
+            // 重置表单
+            document.getElementById('training-form').reset();
+            document.getElementById('training-date').valueAsDate = new Date();
+            
+            // 更新历史记录
+            updateHistory();
+            
+            // 显示成功消息
+            alert('训练记录已保存');
+            
+            // 切换到历史记录标签
+            showTab('history');
+        }
+        
+        // 更新历史记录
+        function updateHistory() {
+            const historyList = document.getElementById('history-list');
+            const noRecords = document.getElementById('no-records');
+            
+            if (trainingLogs.length === 0) {
+                noRecords.style.display = 'block';
+                return;
+            }
+            
+            noRecords.style.display = 'none';
+            
+            // 清空历史记录列表
+            historyList.innerHTML = '';
+            
+            // 按日期降序排序
+            trainingLogs.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            // 添加记录到列表
+            trainingLogs.forEach(log => {
+                const typeMap = {
+                    'run': '跑步',
+                    'tennis': '网球',
+                    'strength': '力量训练',
+                    'rest': '休息日'
+                };
+                
+                const formattedDate = new Date(log.date).toLocaleDateString('zh-CN', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                const recordDiv = document.createElement('div');
+                recordDiv.className = 'training-day';
+                recordDiv.innerHTML = `
+                    <h3>${formattedDate} - ${typeMap[log.type]}</h3>
+                    ${log.distance > 0 ? `<p>距离: ${log.distance} 公里</p>` : ''}
+                    ${log.duration > 0 ? `<p>时间: ${log.duration} 分钟</p>` : ''}
+                    ${log.notes ? `<p>备注: ${log.notes}</p>` : ''}
+                    <p>训练周: 第${log.week}周</p>
+                    <button onclick="deleteTraining(${log.id})">删除</button>
+                `;
+                
+                historyList.appendChild(recordDiv);
+            });
+        }
+        
+        // 删除训练记录
+        function deleteTraining(id) {
+            if (confirm('确定要删除这条训练记录吗？')) {
+                trainingLogs = trainingLogs.filter(log => log.id !== id);
+                localStorage.setItem('trainingLogs', JSON.stringify(trainingLogs));
+                updateHistory();
+            }
+        }
+        
+        // 获取特定周的训练计划
+        function getTrainingPlanForWeek(week) {
+            // 第一阶段：建立基础（1-4周）
+            if (week >= 1 && week <= 4) {
+                return [
+                    {
+                        typeText: '休息/伸展',
+                        details: '充分休息，进行轻度伸展',
+                        duration: '15-20分钟',
+                        intensity: '低'
+                    },
+                    {
+                        typeText: '跑步/步行间隔',
+                        details: week <= 2 ? '2分钟慢跑+3分钟步行，重复5-6次' : '3分钟慢跑+2分钟步行，重复5-6次',
+                        duration: '25-30分钟',
+                        intensity: '中低'
+                    },
+                    {
+                        typeText: '力量训练',
+                        details: '下半身和核心训练',
+                        duration: '30-40分钟',
+                        intensity: '中'
+                    },
+                    {
+                        typeText: '跑步/步行间隔',
+                        details: week <= 2 ? '3分钟慢跑+2分钟步行，重复5-6次' : '4分钟慢跑+1分钟步行，重复5-6次',
+                        duration: '25-30分钟',
+                        intensity: '中低'
+                    },
+                    {
+                        typeText: '休息/恢复',
+                        details: '主动恢复，轻度伸展',
+                        duration: '15-20分钟',
+                        intensity: '低'
+                    },
+                    {
+                        typeText: '网球训练',
+                        details: '常规网球训练',
+                        duration: '60-90分钟',
+                        intensity: '中高'
+                    },
+                    {
+                        typeText: '较长时间慢跑',
+                        details: '持续慢跑，注重节奏控制',
+                        duration: week === 1 ? '20分钟' : week === 2 ? '25分钟' : week === 3 ? '30分钟' : '35分钟',
+                        intensity: '中'
+                    }
+                ];
+            }
+            // 第二阶段：提高耐力与VO2max（5-8周）
+            else if (week >= 5 && week <= 8) {
+                return [
+                    {
+                        typeText: '休息/伸展',
+                        details: '充分休息，泡沫轴放松肌肉',
+                        duration: '15-20分钟',
+                        intensity: '低'
+                    },
+                    {
+                        typeText: 'VO2max间歇训练',
+                        details: '热身10分钟后，高强度间歇跑',
+                        duration: '30-40分钟',
+                        intensity: '高'
+                    },
+                    {
+                        typeText: '力量训练/网球',
+                        details: '强化腿部和核心，增加强度',
+                        duration: '40-45分钟',
+                        intensity: '中高'
+                    },
+                    {
+                        typeText: '节奏跑',
+                        details: '以比赛配速稍快的速度匀速跑',
+                        duration: week === 5 ? '30分钟' : week === 6 ? '35分钟' : week === 7 ? '40分钟' : '45分钟',
+                        intensity: '中高'
+                    },
+                    {
+                        typeText: '休息/恢复',
+                        details: '主动恢复，轻度伸展',
+                        duration: '15-20分钟',
+                        intensity: '低'
+                    },
+                    {
+                        typeText: '网球训练',
+                        details: '保持常规网球训练',
+                        duration: '60-90分钟',
+                        intensity: '中高'
+                    },
+                    {
+                        typeText: '长距离慢跑',
+                        details: '持续慢跑，建立耐力基础',
+                        duration: week === 5 ? '6公里' : week === 6 ? '8公里' : week === 7 ? '10公里' : '12公里',
+                        intensity: '中'
+                    }
+                ];
+            }
+            // 第三阶段：冲刺准备（9-12周）
+            else {
+                return [
+                    {
+                        typeText: '休息/伸展',
+                        details: '彻底休息和恢复',
+                        duration: '15-20分钟',
+                        intensity: '低'
+                    },
+                    {
+                        typeText: 'VO2max维持训练',
+                        details: week < 12 ? `${week === 11 ? '5' : '4'}组1000米高强度间歇` : '4组800米高强度间歇',
+                        duration: '40-50分钟',
+                        intensity: '高'
+                    },
+                    {
+                        typeText: '力量训练/网球',
+                        details: '维持力量，减轻强度',
+                        duration: '30-40分钟',
+                        intensity: '中'
+                    },
+                    {
+                        typeText: '配速训练',
+                        details: '以目标半马配速进行中距离跑',
+                        duration: '8-10公里',
+                        intensity: '中高'
+                    },
+                    {
+                        typeText: '休息/伸展',
+                        details: '充分休息，为周末长跑储备能量',
+                        duration: '15-20分钟',
+                        intensity: '低'
+                    },
+                    {
+                        typeText: '网球训练',
+                        details: '保持常规网球训练',
+                        duration: '60-90分钟',
+                        intensity: '中高'
+                    },
+                    {
+                        typeText: '长距离跑',
+                        details: '以比赛配速完成长距离',
+                        duration: week === 9 ? '14公里' : week === 10 ? '16公里' : week === 11 ? '18公里' : '12公里',
+                        intensity: '中高'
+                    }
+                ];
+            }
+        }
+    </script>
+</body>
+</html>
