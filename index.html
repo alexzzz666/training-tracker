@@ -6,9 +6,9 @@
   <title>半马训练追踪器</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- 引入 Tailwind CSS CDN -->
+  <!-- 引入 Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- 引入 lucide 图标（可选） -->
+  <!-- 可选：引入 lucide 图标 -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-gray-50 text-gray-900">
@@ -111,122 +111,132 @@
       
       <!-- 月度评估 -->
       <div id="monthly-content" class="tab-content hidden">
-        <h2 class="text-xl font-semibold mb-2">月度评估</h2>
+        <h2 class="text-xl font-semibold mb-4">月度评估</h2>
         <button type="button" class="mb-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded" onclick="toggleMonthlyForm()">创建/隐藏评估表单</button>
-        <div id="monthly-form" class="mb-4 hidden space-y-4">
-          <!-- 头部 -->
-          <div class="text-center font-mono font-bold text-lg">=== 第<span id="monthNumber">1</span>个月评估 ===</div>
+        <div id="monthly-form" class="mb-6 hidden space-y-4">
+          <!-- 头部标题 -->
+          <div class="text-center font-mono font-bold text-lg mb-4">=== 第<span id="monthNumber">1</span>个月评估 ===</div>
           <!-- 日期范围 -->
-          <div>
-            <label for="monthStartDate" class="block text-sm font-medium">日期范围: 开始日期</label>
-            <input type="date" id="monthStartDate" class="border rounded px-3 py-2 w-full" required>
-          </div>
-          <div>
-            <label for="monthEndDate" class="block text-sm font-medium">日期范围: 结束日期</label>
-            <input type="date" id="monthEndDate" class="border rounded px-3 py-2 w-full" required>
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label for="monthStartDate" class="block text-sm font-medium">开始日期</label>
+              <input type="date" id="monthStartDate" class="border rounded px-3 py-2 w-full" required>
+            </div>
+            <div>
+              <label for="monthEndDate" class="block text-sm font-medium">结束日期</label>
+              <input type="date" id="monthEndDate" class="border rounded px-3 py-2 w-full" required>
+            </div>
           </div>
           <!-- 身体指标 -->
-          <div class="font-semibold">身体指标:</div>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="startWeight" class="block text-sm font-medium">起始体重 (kg)</label>
-              <input type="number" id="startWeight" class="border rounded px-3 py-2 w-full" step="0.1">
-            </div>
-            <div>
-              <label for="currentWeight" class="block text-sm font-medium">当前体重 (kg)</label>
-              <input type="number" id="currentWeight" class="border rounded px-3 py-2 w-full" step="0.1">
-            </div>
-            <div>
-              <label for="startHeartRate" class="block text-sm font-medium">起始静息心率 (bpm)</label>
-              <input type="number" id="startHeartRate" class="border rounded px-3 py-2 w-full">
-            </div>
-            <div>
-              <label for="currentHeartRate" class="block text-sm font-medium">当前静息心率 (bpm)</label>
-              <input type="number" id="currentHeartRate" class="border rounded px-3 py-2 w-full">
+          <div class="mb-4">
+            <div class="font-semibold mb-2">身体指标:</div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="startWeight" class="block text-sm font-medium">起始体重 (kg)</label>
+                <input type="number" id="startWeight" class="border rounded px-3 py-2 w-full" step="0.1">
+              </div>
+              <div>
+                <label for="currentWeight" class="block text-sm font-medium">当前体重 (kg)</label>
+                <input type="number" id="currentWeight" class="border rounded px-3 py-2 w-full" step="0.1">
+              </div>
+              <div>
+                <label for="startHeartRate" class="block text-sm font-medium">起始静息心率 (bpm)</label>
+                <input type="number" id="startHeartRate" class="border rounded px-3 py-2 w-full">
+              </div>
+              <div>
+                <label for="currentHeartRate" class="block text-sm font-medium">当前静息心率 (bpm)</label>
+                <input type="number" id="currentHeartRate" class="border rounded px-3 py-2 w-full">
+              </div>
             </div>
           </div>
           <!-- 训练数据 -->
-          <div class="font-semibold">训练数据:</div>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="trainingDays" class="block text-sm font-medium">本月训练天数 (天)</label>
-              <input type="number" id="trainingDays" class="border rounded px-3 py-2 w-full">
-            </div>
-            <div>
-              <label for="monthlyDistance" class="block text-sm font-medium">本月总跑量 (km)</label>
-              <input type="number" id="monthlyDistance" class="border rounded px-3 py-2 w-full" step="0.1">
-            </div>
-            <div>
-              <label for="longestRun" class="block text-sm font-medium">最长单次跑步 (km)</label>
-              <input type="number" id="longestRun" class="border rounded px-3 py-2 w-full" step="0.1">
-            </div>
-            <div>
-              <label for="fastestPace" class="block text-sm font-medium">最快配速 (分钟/公里)</label>
-              <input type="number" id="fastestPace" class="border rounded px-3 py-2 w-full" step="0.1">
+          <div class="mb-4">
+            <div class="font-semibold mb-2">训练数据:</div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="trainingDays" class="block text-sm font-medium">本月训练天数 (天)</label>
+                <input type="number" id="trainingDays" class="border rounded px-3 py-2 w-full">
+              </div>
+              <div>
+                <label for="monthlyDistance" class="block text-sm font-medium">本月总跑量 (km)</label>
+                <input type="number" id="monthlyDistance" class="border rounded px-3 py-2 w-full" step="0.1">
+              </div>
+              <div>
+                <label for="longestRun" class="block text-sm font-medium">最长单次跑步 (km)</label>
+                <input type="number" id="longestRun" class="border rounded px-3 py-2 w-full" step="0.1">
+              </div>
+              <div>
+                <label for="fastestPace" class="block text-sm font-medium">最快配速 (分钟/公里)</label>
+                <input type="number" id="fastestPace" class="border rounded px-3 py-2 w-full" step="0.1">
+              </div>
             </div>
           </div>
           <!-- 主观评估 -->
-          <div class="font-semibold">主观评估 (1-5):</div>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium">整体能量水平:</label>
-              <div class="flex space-x-2">
-                <label><input type="radio" name="energyLevel" value="1">1</label>
-                <label><input type="radio" name="energyLevel" value="2">2</label>
-                <label><input type="radio" name="energyLevel" value="3">3</label>
-                <label><input type="radio" name="energyLevel" value="4">4</label>
-                <label><input type="radio" name="energyLevel" value="5">5</label>
+          <div class="mb-4">
+            <div class="font-semibold mb-2">主观评估 (1-5):</div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium">整体能量水平:</label>
+                <div class="flex space-x-2">
+                  <label><input type="radio" name="energyLevel" value="1">1</label>
+                  <label><input type="radio" name="energyLevel" value="2">2</label>
+                  <label><input type="radio" name="energyLevel" value="3">3</label>
+                  <label><input type="radio" name="energyLevel" value="4">4</label>
+                  <label><input type="radio" name="energyLevel" value="5">5</label>
+                </div>
               </div>
-            </div>
-            <div>
-              <label class="block text-sm font-medium">恢复能力:</label>
-              <div class="flex space-x-2">
-                <label><input type="radio" name="recoveryAbility" value="1">1</label>
-                <label><input type="radio" name="recoveryAbility" value="2">2</label>
-                <label><input type="radio" name="recoveryAbility" value="3">3</label>
-                <label><input type="radio" name="recoveryAbility" value="4">4</label>
-                <label><input type="radio" name="recoveryAbility" value="5">5</label>
+              <div>
+                <label class="block text-sm font-medium">恢复能力:</label>
+                <div class="flex space-x-2">
+                  <label><input type="radio" name="recoveryAbility" value="1">1</label>
+                  <label><input type="radio" name="recoveryAbility" value="2">2</label>
+                  <label><input type="radio" name="recoveryAbility" value="3">3</label>
+                  <label><input type="radio" name="recoveryAbility" value="4">4</label>
+                  <label><input type="radio" name="recoveryAbility" value="5">5</label>
+                </div>
               </div>
-            </div>
-            <div>
-              <label class="block text-sm font-medium">睡眠质量:</label>
-              <div class="flex space-x-2">
-                <label><input type="radio" name="sleepQuality" value="1">1</label>
-                <label><input type="radio" name="sleepQuality" value="2">2</label>
-                <label><input type="radio" name="sleepQuality" value="3">3</label>
-                <label><input type="radio" name="sleepQuality" value="4">4</label>
-                <label><input type="radio" name="sleepQuality" value="5">5</label>
+              <div>
+                <label class="block text-sm font-medium">睡眠质量:</label>
+                <div class="flex space-x-2">
+                  <label><input type="radio" name="sleepQuality" value="1">1</label>
+                  <label><input type="radio" name="sleepQuality" value="2">2</label>
+                  <label><input type="radio" name="sleepQuality" value="3">3</label>
+                  <label><input type="radio" name="sleepQuality" value="4">4</label>
+                  <label><input type="radio" name="sleepQuality" value="5">5</label>
+                </div>
               </div>
-            </div>
-            <div>
-              <label class="block text-sm font-medium">训练动力:</label>
-              <div class="flex space-x-2">
-                <label><input type="radio" name="trainingMotivation" value="1">1</label>
-                <label><input type="radio" name="trainingMotivation" value="2">2</label>
-                <label><input type="radio" name="trainingMotivation" value="3">3</label>
-                <label><input type="radio" name="trainingMotivation" value="4">4</label>
-                <label><input type="radio" name="trainingMotivation" value="5">5</label>
+              <div>
+                <label class="block text-sm font-medium">训练动力:</label>
+                <div class="flex space-x-2">
+                  <label><input type="radio" name="trainingMotivation" value="1">1</label>
+                  <label><input type="radio" name="trainingMotivation" value="2">2</label>
+                  <label><input type="radio" name="trainingMotivation" value="3">3</label>
+                  <label><input type="radio" name="trainingMotivation" value="4">4</label>
+                  <label><input type="radio" name="trainingMotivation" value="5">5</label>
+                </div>
               </div>
             </div>
           </div>
           <!-- 总结 -->
-          <div class="font-semibold">总结:</div>
-          <div class="space-y-2">
-            <div>
-              <label for="monthHighlights" class="block text-sm font-medium">本月亮点</label>
-              <textarea id="monthHighlights" class="border rounded px-3 py-2 w-full" rows="2"></textarea>
-            </div>
-            <div>
-              <label for="monthChallenges" class="block text-sm font-medium">困难挑战</label>
-              <textarea id="monthChallenges" class="border rounded px-3 py-2 w-full" rows="2"></textarea>
-            </div>
-            <div>
-              <label for="nextMonthGoals" class="block text-sm font-medium">下月目标</label>
-              <textarea id="nextMonthGoals" class="border rounded px-3 py-2 w-full" rows="2"></textarea>
-            </div>
-            <div>
-              <label for="planAdjustments" class="block text-sm font-medium">计划调整</label>
-              <textarea id="planAdjustments" class="border rounded px-3 py-2 w-full" rows="2"></textarea>
+          <div class="mb-4">
+            <div class="font-semibold mb-2">总结:</div>
+            <div class="space-y-2">
+              <div>
+                <label for="monthHighlights" class="block text-sm font-medium">本月亮点</label>
+                <textarea id="monthHighlights" class="border rounded px-3 py-2 w-full" rows="2"></textarea>
+              </div>
+              <div>
+                <label for="monthChallenges" class="block text-sm font-medium">困难挑战</label>
+                <textarea id="monthChallenges" class="border rounded px-3 py-2 w-full" rows="2"></textarea>
+              </div>
+              <div>
+                <label for="nextMonthGoals" class="block text-sm font-medium">下月目标</label>
+                <textarea id="nextMonthGoals" class="border rounded px-3 py-2 w-full" rows="2"></textarea>
+              </div>
+              <div>
+                <label for="planAdjustments" class="block text-sm font-medium">计划调整</label>
+                <textarea id="planAdjustments" class="border rounded px-3 py-2 w-full" rows="2"></textarea>
+              </div>
             </div>
           </div>
           <button type="button" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded" onclick="saveMonthlyEvaluation()">保存评估</button>
@@ -254,11 +264,10 @@
       document.getElementById(tabId + '-content').classList.remove('hidden');
     }
     
-    /* ----- 训练计划部分 ----- */
+    /* ----- 训练计划 ----- */
     function updatePlan() {
       const week = parseInt(document.getElementById('week-select').value);
       const weekPlan = document.getElementById('week-plan');
-      // 示例计划数据，根据 week 值简单调整说明文字
       const planData = [
         { typeText: '休息/伸展', details: '充分休息，进行轻度伸展', duration: '15-20分钟', intensity: '低' },
         { typeText: '跑步/步行间隔', details: week <= 2 ? '2分慢跑+3分步行，重复5次' : '3分慢跑+2分步行，重复5次', duration: '25-30分钟', intensity: '中低' },
@@ -312,7 +321,6 @@
         historyList.innerHTML = '<p id="no-records" class="text-gray-500">暂无训练记录</p>';
         return;
       }
-      // 按训练周分组
       const groups = {};
       trainingLogs.forEach(log => {
         const wk = log.week;
@@ -346,7 +354,7 @@
       });
     }
     
-    /* ----- 月度评估部分 ----- */
+    /* ----- 月度评估 ----- */
     let monthlyEvaluations = JSON.parse(localStorage.getItem('monthlyEvaluations')) || [];
     
     function toggleMonthlyForm() {
@@ -379,26 +387,26 @@
       }
       const weightChange = (parseFloat(currentWeight) - parseFloat(startWeight)).toFixed(1);
       const evaluation = {
-          id: Date.now(),
-          monthStartDate,
-          monthEndDate,
-          startWeight,
-          currentWeight,
-          weightChange,
-          startHeartRate,
-          currentHeartRate,
-          trainingDays,
-          monthlyDistance,
-          longestRun,
-          fastestPace,
-          energyLevel,
-          recoveryAbility,
-          sleepQuality,
-          trainingMotivation,
-          monthHighlights,
-          monthChallenges,
-          nextMonthGoals,
-          planAdjustments
+        id: Date.now(),
+        monthStartDate,
+        monthEndDate,
+        startWeight,
+        currentWeight,
+        weightChange,
+        startHeartRate,
+        currentHeartRate,
+        trainingDays,
+        monthlyDistance,
+        longestRun,
+        fastestPace,
+        energyLevel,
+        recoveryAbility,
+        sleepQuality,
+        trainingMotivation,
+        monthHighlights,
+        monthChallenges,
+        nextMonthGoals,
+        planAdjustments
       };
       monthlyEvaluations.push(evaluation);
       localStorage.setItem('monthlyEvaluations', JSON.stringify(monthlyEvaluations));
