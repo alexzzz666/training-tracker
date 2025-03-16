@@ -2,34 +2,114 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>半马训练追踪器</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- 引入 Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- 可选：引入 lucide 图标 -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>简易半马训练跟踪器（整合周统计与月度评估）</title>
+  <style>
+    /* 基本样式 */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    h1, h2, h3 {
+      color: #2980b9;
+    }
+    h1 {
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 20px;
+    }
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+    }
+    .tab.active {
+      border-bottom-color: #3498db;
+      font-weight: bold;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input, select, textarea, button {
+      padding: 8px;
+      margin: 4px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .btn-success {
+      background-color: #2ecc71;
+    }
+    .btn-success:hover {
+      background-color: #27ae60;
+    }
+    .section {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: #fafafa;
+    }
+    .section h3 {
+      margin-top: 0;
+    }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
-  <div class="max-w-3xl mx-auto p-4">
-    <div class="bg-white shadow-lg rounded-lg p-6">
-      <!-- 页面头部 -->
-      <h1 class="text-2xl font-bold mb-4">半马训练追踪器</h1>
-      <!-- 标签导航 -->
-      <div class="flex border-b mb-4">
-        <button id="tab-plan" class="px-4 py-2 text-blue-600 border-b-2 border-blue-600 focus:outline-none" onclick="showTab('plan')">训练计划</button>
-        <button id="tab-log" class="px-4 py-2 text-gray-600 border-b-2 border-transparent hover:text-blue-600 focus:outline-none" onclick="showTab('log')">记录训练</button>
-        <button id="tab-history" class="px-4 py-2 text-gray-600 border-b-2 border-transparent hover:text-blue-600 focus:outline-none" onclick="showTab('history')">历史记录</button>
-        <button id="tab-monthly" class="px-4 py-2 text-gray-600 border-b-2 border-transparent hover:text-blue-600 focus:outline-none" onclick="showTab('monthly')">月度评估</button>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>简易半马训练跟踪器</h1>
+      <!-- 四个标签 -->
+      <div class="tabs">
+        <div class="tab active" id="tab-plan" onclick="showTab('plan')">训练计划</div>
+        <div class="tab" id="tab-log" onclick="showTab('log')">记录训练</div>
+        <div class="tab" id="tab-history" onclick="showTab('history')">历史记录</div>
+        <div class="tab" id="tab-monthly" onclick="showTab('monthly')">月度评估</div>
       </div>
       
       <!-- 训练计划 -->
-      <div id="plan-content" class="tab-content">
-        <h2 class="text-xl font-semibold mb-2">本周训练计划</h2>
-        <div class="mb-4">
-          <label for="week-select" class="block text-sm font-medium mb-1">选择训练周</label>
-          <select id="week-select" class="border rounded px-3 py-2 w-full" onchange="updatePlan()">
+      <div id="plan-content" class="tab-content active">
+        <h2>本周训练计划</h2>
+        <div class="form-group">
+          <label for="week-select">选择训练周</label>
+          <select id="week-select" onchange="updatePlan()">
             <option value="1">第1周 - 建立基础</option>
             <option value="2">第2周 - 建立基础</option>
             <option value="3">第3周 - 建立基础</option>
@@ -44,22 +124,22 @@
             <option value="12">第12周 - 冲刺准备</option>
           </select>
         </div>
-        <div id="week-plan" class="space-y-4">
-          <!-- 训练计划内容将在这里生成 -->
+        <div id="week-plan">
+          <!-- 训练计划将在这里显示 -->
         </div>
       </div>
       
       <!-- 记录训练 -->
-      <div id="log-content" class="tab-content hidden">
-        <h2 class="text-xl font-semibold mb-2">记录训练</h2>
-        <form id="training-form" class="space-y-4">
-          <div>
-            <label for="training-date" class="block text-sm font-medium">日期</label>
-            <input type="date" id="training-date" class="border rounded px-3 py-2 w-full" required>
+      <div id="log-content" class="tab-content">
+        <h2>记录训练</h2>
+        <form id="training-form">
+          <div class="form-group">
+            <label for="training-date">日期</label>
+            <input type="date" id="training-date" required>
           </div>
-          <div>
-            <label for="training-type" class="block text-sm font-medium">训练类型</label>
-            <select id="training-type" class="border rounded px-3 py-2 w-full" required>
+          <div class="form-group">
+            <label for="training-type">训练类型</label>
+            <select id="training-type" required>
               <option value="">选择训练类型</option>
               <option value="run">跑步</option>
               <option value="tennis">网球</option>
@@ -67,21 +147,21 @@
               <option value="rest">休息日</option>
             </select>
           </div>
-          <div>
-            <label for="training-distance" class="block text-sm font-medium">距离 (公里)</label>
-            <input type="number" id="training-distance" class="border rounded px-3 py-2 w-full" step="0.1" min="0">
+          <div class="form-group">
+            <label for="training-distance">距离 (公里)</label>
+            <input type="number" id="training-distance" step="0.1" min="0">
           </div>
-          <div>
-            <label for="training-duration" class="block text-sm font-medium">时间 (分钟)</label>
-            <input type="number" id="training-duration" class="border rounded px-3 py-2 w-full" min="0">
+          <div class="form-group">
+            <label for="training-duration">时间 (分钟)</label>
+            <input type="number" id="training-duration" min="0">
           </div>
-          <div>
-            <label for="training-notes" class="block text-sm font-medium">备注</label>
-            <textarea id="training-notes" class="border rounded px-3 py-2 w-full" rows="3"></textarea>
+          <div class="form-group">
+            <label for="training-notes">备注</label>
+            <textarea id="training-notes" rows="3"></textarea>
           </div>
-          <div>
-            <label for="training-week" class="block text-sm font-medium">训练周</label>
-            <select id="training-week" class="border rounded px-3 py-2 w-full" required>
+          <div class="form-group">
+            <label for="training-week">训练周</label>
+            <select id="training-week" required>
               <option value="">选择训练周</option>
               <option value="1">第1周</option>
               <option value="2">第2周</option>
@@ -97,362 +177,160 @@
               <option value="12">第12周</option>
             </select>
           </div>
-          <button type="button" class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded" onclick="saveTraining()">保存训练记录</button>
+          <button type="button" class="btn-success" onclick="saveTraining()">保存训练记录</button>
         </form>
       </div>
       
-      <!-- 历史记录与周总结 -->
-      <div id="history-content" class="tab-content hidden">
-        <h2 class="text-xl font-semibold mb-2">历史记录与周总结</h2>
-        <div id="history-list" class="space-y-4">
-          <p id="no-records" class="text-gray-500">暂无训练记录</p>
+      <!-- 历史记录（按训练周统计） -->
+      <div id="history-content" class="tab-content">
+        <h2>训练历史与周总结</h2>
+        <div id="history-list">
+          <p id="no-records">暂无训练记录</p>
         </div>
       </div>
       
       <!-- 月度评估 -->
-      <div id="monthly-content" class="tab-content hidden">
-        <h2 class="text-xl font-semibold mb-4">月度评估</h2>
-        <button type="button" class="mb-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded" onclick="toggleMonthlyForm()">创建/隐藏评估表单</button>
-        <div id="monthly-form" class="mb-6 hidden space-y-4">
-          <!-- 头部标题 -->
-          <div class="text-center font-mono font-bold text-lg mb-4">=== 第<span id="monthNumber">1</span>个月评估 ===</div>
+      <div id="monthly-content" class="tab-content">
+        <h2>月度评估</h2>
+        <button type="button" onclick="toggleMonthlyForm()">创建/隐藏评估表单</button>
+        <div id="monthly-form" style="display: none; margin-top: 10px;">
+          <!-- 标题 -->
+          <div class="form-group">
+            <div style="text-align: center; font-family: monospace; font-weight: bold; font-size: 1.2em;">
+              === 第<span id="monthNumber">1</span>个月评估 ===
+            </div>
+          </div>
           <!-- 日期范围 -->
-          <div class="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label for="monthStartDate" class="block text-sm font-medium">开始日期</label>
-              <input type="date" id="monthStartDate" class="border rounded px-3 py-2 w-full" required>
-            </div>
-            <div>
-              <label for="monthEndDate" class="block text-sm font-medium">结束日期</label>
-              <input type="date" id="monthEndDate" class="border rounded px-3 py-2 w-full" required>
-            </div>
+          <div class="form-group">
+            <label for="monthStartDate">开始日期</label>
+            <input type="date" id="monthStartDate" required>
+          </div>
+          <div class="form-group">
+            <label for="monthEndDate">结束日期</label>
+            <input type="date" id="monthEndDate" required>
           </div>
           <!-- 身体指标 -->
-          <div class="mb-4">
-            <div class="font-semibold mb-2">身体指标:</div>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label for="startWeight" class="block text-sm font-medium">起始体重 (kg)</label>
-                <input type="number" id="startWeight" class="border rounded px-3 py-2 w-full" step="0.1">
-              </div>
-              <div>
-                <label for="currentWeight" class="block text-sm font-medium">当前体重 (kg)</label>
-                <input type="number" id="currentWeight" class="border rounded px-3 py-2 w-full" step="0.1">
-              </div>
-              <div>
-                <label for="startHeartRate" class="block text-sm font-medium">起始静息心率 (bpm)</label>
-                <input type="number" id="startHeartRate" class="border rounded px-3 py-2 w-full">
-              </div>
-              <div>
-                <label for="currentHeartRate" class="block text-sm font-medium">当前静息心率 (bpm)</label>
-                <input type="number" id="currentHeartRate" class="border rounded px-3 py-2 w-full">
-              </div>
-            </div>
+          <div class="form-group">
+            <label for="startWeight">起始体重 (kg)</label>
+            <input type="number" id="startWeight" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="currentWeight">当前体重 (kg)</label>
+            <input type="number" id="currentWeight" step="0.1">
+          </div>
+          <!-- 静息心率 -->
+          <div class="form-group">
+            <label for="startHeartRate">起始静息心率 (bpm)</label>
+            <input type="number" id="startHeartRate">
+          </div>
+          <div class="form-group">
+            <label for="currentHeartRate">当前静息心率 (bpm)</label>
+            <input type="number" id="currentHeartRate">
           </div>
           <!-- 训练数据 -->
-          <div class="mb-4">
-            <div class="font-semibold mb-2">训练数据:</div>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label for="trainingDays" class="block text-sm font-medium">本月训练天数 (天)</label>
-                <input type="number" id="trainingDays" class="border rounded px-3 py-2 w-full">
-              </div>
-              <div>
-                <label for="monthlyDistance" class="block text-sm font-medium">本月总跑量 (km)</label>
-                <input type="number" id="monthlyDistance" class="border rounded px-3 py-2 w-full" step="0.1">
-              </div>
-              <div>
-                <label for="longestRun" class="block text-sm font-medium">最长单次跑步 (km)</label>
-                <input type="number" id="longestRun" class="border rounded px-3 py-2 w-full" step="0.1">
-              </div>
-              <div>
-                <label for="fastestPace" class="block text-sm font-medium">最快配速 (分钟/公里)</label>
-                <input type="number" id="fastestPace" class="border rounded px-3 py-2 w-full" step="0.1">
-              </div>
-            </div>
+          <div class="form-group">
+            <label for="trainingDays">本月训练天数 (天)</label>
+            <input type="number" id="trainingDays">
+          </div>
+          <div class="form-group">
+            <label for="monthlyDistance">本月总跑量 (km)</label>
+            <input type="number" id="monthlyDistance" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="longestRun">最长单次跑步 (km)</label>
+            <input type="number" id="longestRun" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="fastestPace">最快配速 (分钟/公里)</label>
+            <input type="number" id="fastestPace" step="0.1">
           </div>
           <!-- 主观评估 -->
-          <div class="mb-4">
-            <div class="font-semibold mb-2">主观评估 (1-5):</div>
-            <div class="grid grid-cols-2 gap-4">
+          <div class="form-group">
+            <div style="font-weight: bold;">主观评估 (1-5):</div>
+            <div class="form-group">
+              <label>整体能量水平:</label>
               <div>
-                <label class="block text-sm font-medium">整体能量水平:</label>
-                <div class="flex space-x-2">
-                  <label><input type="radio" name="energyLevel" value="1">1</label>
-                  <label><input type="radio" name="energyLevel" value="2">2</label>
-                  <label><input type="radio" name="energyLevel" value="3">3</label>
-                  <label><input type="radio" name="energyLevel" value="4">4</label>
-                  <label><input type="radio" name="energyLevel" value="5">5</label>
-                </div>
+                <label><input type="radio" name="energyLevel" value="1"> 1</label>
+                <label><input type="radio" name="energyLevel" value="2"> 2</label>
+                <label><input type="radio" name="energyLevel" value="3"> 3</label>
+                <label><input type="radio" name="energyLevel" value="4"> 4</label>
+                <label><input type="radio" name="energyLevel" value="5"> 5</label>
               </div>
+            </div>
+            <div class="form-group">
+              <label>恢复能力:</label>
               <div>
-                <label class="block text-sm font-medium">恢复能力:</label>
-                <div class="flex space-x-2">
-                  <label><input type="radio" name="recoveryAbility" value="1">1</label>
-                  <label><input type="radio" name="recoveryAbility" value="2">2</label>
-                  <label><input type="radio" name="recoveryAbility" value="3">3</label>
-                  <label><input type="radio" name="recoveryAbility" value="4">4</label>
-                  <label><input type="radio" name="recoveryAbility" value="5">5</label>
-                </div>
+                <label><input type="radio" name="recoveryAbility" value="1"> 1</label>
+                <label><input type="radio" name="recoveryAbility" value="2"> 2</label>
+                <label><input type="radio" name="recoveryAbility" value="3"> 3</label>
+                <label><input type="radio" name="recoveryAbility" value="4"> 4</label>
+                <label><input type="radio" name="recoveryAbility" value="5"> 5</label>
               </div>
+            </div>
+            <div class="form-group">
+              <label>睡眠质量:</label>
               <div>
-                <label class="block text-sm font-medium">睡眠质量:</label>
-                <div class="flex space-x-2">
-                  <label><input type="radio" name="sleepQuality" value="1">1</label>
-                  <label><input type="radio" name="sleepQuality" value="2">2</label>
-                  <label><input type="radio" name="sleepQuality" value="3">3</label>
-                  <label><input type="radio" name="sleepQuality" value="4">4</label>
-                  <label><input type="radio" name="sleepQuality" value="5">5</label>
-                </div>
+                <label><input type="radio" name="sleepQuality" value="1"> 1</label>
+                <label><input type="radio" name="sleepQuality" value="2"> 2</label>
+                <label><input type="radio" name="sleepQuality" value="3"> 3</label>
+                <label><input type="radio" name="sleepQuality" value="4"> 4</label>
+                <label><input type="radio" name="sleepQuality" value="5"> 5</label>
               </div>
+            </div>
+            <div class="form-group">
+              <label>训练动力:</label>
               <div>
-                <label class="block text-sm font-medium">训练动力:</label>
-                <div class="flex space-x-2">
-                  <label><input type="radio" name="trainingMotivation" value="1">1</label>
-                  <label><input type="radio" name="trainingMotivation" value="2">2</label>
-                  <label><input type="radio" name="trainingMotivation" value="3">3</label>
-                  <label><input type="radio" name="trainingMotivation" value="4">4</label>
-                  <label><input type="radio" name="trainingMotivation" value="5">5</label>
-                </div>
+                <label><input type="radio" name="trainingMotivation" value="1"> 1</label>
+                <label><input type="radio" name="trainingMotivation" value="2"> 2</label>
+                <label><input type="radio" name="trainingMotivation" value="3"> 3</label>
+                <label><input type="radio" name="trainingMotivation" value="4"> 4</label>
+                <label><input type="radio" name="trainingMotivation" value="5"> 5</label>
               </div>
             </div>
           </div>
           <!-- 总结 -->
-          <div class="mb-4">
-            <div class="font-semibold mb-2">总结:</div>
-            <div class="space-y-2">
-              <div>
-                <label for="monthHighlights" class="block text-sm font-medium">本月亮点</label>
-                <textarea id="monthHighlights" class="border rounded px-3 py-2 w-full" rows="2"></textarea>
-              </div>
-              <div>
-                <label for="monthChallenges" class="block text-sm font-medium">困难挑战</label>
-                <textarea id="monthChallenges" class="border rounded px-3 py-2 w-full" rows="2"></textarea>
-              </div>
-              <div>
-                <label for="nextMonthGoals" class="block text-sm font-medium">下月目标</label>
-                <textarea id="nextMonthGoals" class="border rounded px-3 py-2 w-full" rows="2"></textarea>
-              </div>
-              <div>
-                <label for="planAdjustments" class="block text-sm font-medium">计划调整</label>
-                <textarea id="planAdjustments" class="border rounded px-3 py-2 w-full" rows="2"></textarea>
-              </div>
+          <div class="form-group">
+            <div style="font-weight: bold;">总结:</div>
+            <div class="form-group">
+              <label for="monthHighlights">本月亮点</label>
+              <textarea id="monthHighlights" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="monthChallenges">困难挑战</label>
+              <textarea id="monthChallenges" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="nextMonthGoals">下月目标</label>
+              <textarea id="nextMonthGoals" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="planAdjustments">计划调整</label>
+              <textarea id="planAdjustments" rows="2"></textarea>
             </div>
           </div>
-          <button type="button" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded" onclick="saveMonthlyEvaluation()">保存评估</button>
+          <button type="button" onclick="saveMonthlyEvaluation()">保存评估</button>
         </div>
-        <div id="monthly-list" class="space-y-4">
-          <p id="no-monthly" class="text-gray-500">暂无月度评估记录</p>
+        <div id="monthly-list" style="margin-top: 20px;">
+          <p id="no-monthly">暂无月度评估记录</p>
         </div>
       </div>
-      
     </div>
   </div>
   
   <script>
-    // 标签页切换
+    // 标签页切换函数
     function showTab(tabId) {
-      document.querySelectorAll('.tab').forEach(tab => {
-        tab.classList.remove('text-blue-600', 'border-blue-600');
-        tab.classList.add('text-gray-600');
-      });
-      document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.add('hidden');
-      });
-      document.getElementById('tab-' + tabId).classList.remove('text-gray-600');
-      document.getElementById('tab-' + tabId).classList.add('text-blue-600', 'border-blue-600');
-      document.getElementById(tabId + '-content').classList.remove('hidden');
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.getElementById('tab-' + tabId).classList.add('active');
+      document.getElementById(tabId + '-content').classList.add('active');
     }
     
-    /* ----- 训练计划 ----- */
+    /* ----- 训练计划部分 ----- */
     function updatePlan() {
       const week = parseInt(document.getElementById('week-select').value);
       const weekPlan = document.getElementById('week-plan');
+      // 示例计划数据（实际可根据需求调整）
       const planData = [
         { typeText: '休息/伸展', details: '充分休息，进行轻度伸展', duration: '15-20分钟', intensity: '低' },
-        { typeText: '跑步/步行间隔', details: week <= 2 ? '2分慢跑+3分步行，重复5次' : '3分慢跑+2分步行，重复5次', duration: '25-30分钟', intensity: '中低' },
-        { typeText: '力量训练', details: '下半身和核心训练', duration: '30-40分钟', intensity: '中' },
-        { typeText: '跑步/步行间隔', details: week <= 2 ? '3分慢跑+2分步行，重复5次' : '4分慢跑+1分步行，重复5次', duration: '25-30分钟', intensity: '中低' },
-        { typeText: '休息/恢复', details: '主动恢复，轻度伸展', duration: '15-20分钟', intensity: '低' },
-        { typeText: '网球训练', details: '常规网球训练', duration: '60-90分钟', intensity: '中高' },
-        { typeText: '长跑', details: week === 1 ? '20分钟' : week === 2 ? '25分钟' : week === 3 ? '30分钟' : '35分钟', intensity: '中' }
-      ];
-      weekPlan.innerHTML = '';
-      const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
-      for (let i = 0; i < days.length; i++) {
-        const training = planData[i % planData.length];
-        const div = document.createElement('div');
-        div.className = 'p-4 bg-gray-100 rounded-lg shadow';
-        div.innerHTML = `<h3 class="font-semibold">${days[i]}: ${training.typeText}</h3>
-                         <p class="text-sm">${training.details}</p>
-                         <p class="text-sm">时间/距离: ${training.duration}</p>
-                         <p class="text-sm">强度: ${training.intensity}</p>`;
-        weekPlan.appendChild(div);
-      }
-    }
-    
-    /* ----- 训练记录与历史记录 ----- */
-    let trainingLogs = JSON.parse(localStorage.getItem('trainingLogs')) || [];
-    
-    function saveTraining() {
-      const date = document.getElementById('training-date').value;
-      const type = document.getElementById('training-type').value;
-      const distance = parseFloat(document.getElementById('training-distance').value) || 0;
-      const duration = parseFloat(document.getElementById('training-duration').value) || 0;
-      const notes = document.getElementById('training-notes').value;
-      const week = document.getElementById('training-week').value;
-      if (!date || !type || !week) {
-        alert('请至少填写日期、训练类型和训练周');
-        return;
-      }
-      const record = { id: Date.now(), date, type, distance, duration, notes, week: parseInt(week) };
-      trainingLogs.push(record);
-      localStorage.setItem('trainingLogs', JSON.stringify(trainingLogs));
-      document.getElementById('training-form').reset();
-      document.getElementById('training-date').valueAsDate = new Date();
-      updateHistory();
-      alert('训练记录已保存');
-      showTab('history');
-    }
-    
-    function updateHistory() {
-      const historyList = document.getElementById('history-list');
-      if (trainingLogs.length === 0) {
-        historyList.innerHTML = '<p id="no-records" class="text-gray-500">暂无训练记录</p>';
-        return;
-      }
-      const groups = {};
-      trainingLogs.forEach(log => {
-        const wk = log.week;
-        if (!groups[wk]) groups[wk] = [];
-        groups[wk].push(log);
-      });
-      historyList.innerHTML = '';
-      Object.keys(groups).sort((a, b) => a - b).forEach(week => {
-        const logs = groups[week];
-        let totalDistance = 0, totalTime = 0, completed = 0;
-        logs.forEach(rec => {
-          totalDistance += rec.distance;
-          totalTime += rec.duration;
-          if (rec.type !== 'rest') completed++;
-        });
-        const avgPace = totalDistance > 0 ? (totalTime / totalDistance).toFixed(2) : 0;
-        const section = document.createElement('div');
-        section.className = 'p-4 bg-gray-100 rounded-lg shadow';
-        section.innerHTML = `<h3 class="font-semibold">第${week}周总结</h3>
-          <p class="text-sm">总跑量: ${totalDistance.toFixed(1)} 公里</p>
-          <p class="text-sm">总训练时间: ${totalTime} 分钟</p>
-          <p class="text-sm">平均配速: ${avgPace} 分/公里</p>
-          <p class="text-sm">完成训练: ${completed}/${logs.length} 天</p>`;
-        logs.forEach(rec => {
-          const recDiv = document.createElement('div');
-          recDiv.className = "border-t border-gray-300 pt-2 mt-2";
-          recDiv.innerHTML = `<p class="text-xs">${rec.date} - ${rec.type} - ${rec.distance} km - ${rec.duration} 分钟<br><span class="text-gray-600">备注: ${rec.notes}</span></p>`;
-          section.appendChild(recDiv);
-        });
-        historyList.appendChild(section);
-      });
-    }
-    
-    /* ----- 月度评估 ----- */
-    let monthlyEvaluations = JSON.parse(localStorage.getItem('monthlyEvaluations')) || [];
-    
-    function toggleMonthlyForm() {
-      const form = document.getElementById('monthly-form');
-      form.classList.toggle('hidden');
-    }
-    
-    function saveMonthlyEvaluation() {
-      const monthStartDate = document.getElementById('monthStartDate').value;
-      const monthEndDate = document.getElementById('monthEndDate').value;
-      const startWeight = document.getElementById('startWeight').value;
-      const currentWeight = document.getElementById('currentWeight').value;
-      const startHeartRate = document.getElementById('startHeartRate').value;
-      const currentHeartRate = document.getElementById('currentHeartRate').value;
-      const trainingDays = document.getElementById('trainingDays').value;
-      const monthlyDistance = document.getElementById('monthlyDistance').value;
-      const longestRun = document.getElementById('longestRun').value;
-      const fastestPace = document.getElementById('fastestPace').value;
-      const energyLevel = document.querySelector('input[name="energyLevel"]:checked')?.value || "";
-      const recoveryAbility = document.querySelector('input[name="recoveryAbility"]:checked')?.value || "";
-      const sleepQuality = document.querySelector('input[name="sleepQuality"]:checked')?.value || "";
-      const trainingMotivation = document.querySelector('input[name="trainingMotivation"]:checked')?.value || "";
-      const monthHighlights = document.getElementById('monthHighlights').value;
-      const monthChallenges = document.getElementById('monthChallenges').value;
-      const nextMonthGoals = document.getElementById('nextMonthGoals').value;
-      const planAdjustments = document.getElementById('planAdjustments').value;
-      if (!monthStartDate || !monthEndDate) {
-        alert('请填写评估的开始和结束日期');
-        return;
-      }
-      const weightChange = (parseFloat(currentWeight) - parseFloat(startWeight)).toFixed(1);
-      const evaluation = {
-        id: Date.now(),
-        monthStartDate,
-        monthEndDate,
-        startWeight,
-        currentWeight,
-        weightChange,
-        startHeartRate,
-        currentHeartRate,
-        trainingDays,
-        monthlyDistance,
-        longestRun,
-        fastestPace,
-        energyLevel,
-        recoveryAbility,
-        sleepQuality,
-        trainingMotivation,
-        monthHighlights,
-        monthChallenges,
-        nextMonthGoals,
-        planAdjustments
-      };
-      monthlyEvaluations.push(evaluation);
-      localStorage.setItem('monthlyEvaluations', JSON.stringify(monthlyEvaluations));
-      renderMonthlyEvaluations();
-      document.getElementById('monthly-form').reset();
-      toggleMonthlyForm();
-      alert('月度评估已保存');
-    }
-    
-    function renderMonthlyEvaluations() {
-      const monthlyList = document.getElementById('monthly-list');
-      if (monthlyEvaluations.length === 0) {
-        monthlyList.innerHTML = '<p id="no-monthly" class="text-gray-500">暂无月度评估记录</p>';
-        return;
-      }
-      monthlyList.innerHTML = '';
-      monthlyEvaluations.forEach((evalItem, index) => {
-        const div = document.createElement('div');
-        div.className = 'p-4 bg-gray-100 rounded-lg shadow';
-        div.innerHTML = `<div class="text-center font-mono font-bold text-lg mb-2">=== 第${index + 1}个月评估 ===</div>
-          <p class="text-sm">日期范围: ${evalItem.monthStartDate} 至 ${evalItem.monthEndDate}</p>
-          <p class="text-sm">身体指标: 起始体重: ${evalItem.startWeight} kg | 当前体重: ${evalItem.currentWeight} kg (变化: ${evalItem.weightChange} kg)</p>
-          <p class="text-sm">身体指标: 起始静息心率: ${evalItem.startHeartRate} bpm | 当前静息心率: ${evalItem.currentHeartRate} bpm</p>
-          <p class="text-sm">训练数据: 本月训练天数: ${evalItem.trainingDays} 天 | 本月总跑量: ${evalItem.monthlyDistance} km | 最长单次跑步: ${evalItem.longestRun} km | 最快配速: ${evalItem.fastestPace} 分/公里</p>
-          <p class="text-sm">主观评估: 整体能量水平: ${evalItem.energyLevel} | 恢复能力: ${evalItem.recoveryAbility} | 睡眠质量: ${evalItem.sleepQuality} | 训练动力: ${evalItem.trainingMotivation}</p>
-          <p class="text-sm">总结: 本月亮点: ${evalItem.monthHighlights} | 困难挑战: ${evalItem.monthChallenges} | 下月目标: ${evalItem.nextMonthGoals} | 计划调整: ${evalItem.planAdjustments}</p>
-          <button class="mt-2 px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-sm" onclick="deleteMonthly(${evalItem.id})">删除评估</button>`;
-        monthlyList.appendChild(div);
-      });
-    }
-    
-    function deleteMonthly(id) {
-      if (confirm('确定要删除这条月度评估记录吗？')) {
-        monthlyEvaluations = monthlyEvaluations.filter(e => e.id !== id);
-        localStorage.setItem('monthlyEvaluations', JSON.stringify(monthlyEvaluations));
-        renderMonthlyEvaluations();
-      }
-    }
-    
-    // 初始化
-    window.onload = function() {
-      document.getElementById('training-date').valueAsDate = new Date();
-      updatePlan();
-      updateHistory();
-      renderMonthlyEvaluations();
-    };
-  </script>
-</body>
-</html>
+      
