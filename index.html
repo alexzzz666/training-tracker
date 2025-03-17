@@ -19,19 +19,19 @@
   </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
-  <div class="container mx-auto p-4 sm:p-6">
-    <div class="bg-white rounded-xl shadow-lg p-6 sm:p-8">
+  <div class="container mx-auto p-4">
+    <div class="bg-white rounded-xl shadow-lg p-8">
       <!-- 页眉 -->
       <header class="mb-6">
-        <h1 class="text-3xl sm:text-4xl font-bold text-center text-blue-600">半马训练追踪器</h1>
+        <h1 class="text-3xl font-bold text-center text-blue-600">半马训练追踪器</h1>
       </header>
-      <!-- 主导航 -->
-      <nav class="flex flex-wrap justify-center border-b mb-6">
-        <button id="tab-plan" class="px-4 py-2 mx-2 my-1 focus:outline-none tab-active" onclick="showTab('plan')">训练计划</button>
-        <button id="tab-log" class="px-4 py-2 mx-2 my-1 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('log')">记录训练</button>
-        <button id="tab-history" class="px-4 py-2 mx-2 my-1 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('history')">历史记录</button>
-        <button id="tab-monthly" class="px-4 py-2 mx-2 my-1 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('monthly')">月度评估</button>
-        <button id="tab-notes" class="px-4 py-2 mx-2 my-1 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('notes')">其他注意事项</button>
+      <!-- 主导航（统一使用 nav-item 类） -->
+      <nav class="flex justify-center border-b mb-6">
+        <button id="tab-plan" class="nav-item px-4 py-2 mx-2 focus:outline-none tab-active" onclick="showTab('plan')">训练计划</button>
+        <button id="tab-log" class="nav-item px-4 py-2 mx-2 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('log')">记录训练</button>
+        <button id="tab-history" class="nav-item px-4 py-2 mx-2 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('history')">历史记录</button>
+        <button id="tab-monthly" class="nav-item px-4 py-2 mx-2 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('monthly')">月度评估</button>
+        <button id="tab-notes" class="nav-item px-4 py-2 mx-2 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('notes')">其他注意事项</button>
       </nav>
       
       <!-- 标签内容区域 -->
@@ -118,7 +118,6 @@
         <div id="history-list" class="space-y-4">
           <p id="no-records" class="text-gray-500">暂无训练记录</p>
         </div>
-        <!-- 导出数据按钮 -->
         <button type="button" class="mt-4 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-md" onclick="exportData()">导出数据</button>
       </section>
       
@@ -127,11 +126,9 @@
         <h2 class="text-2xl font-semibold mb-4">月度评估</h2>
         <button type="button" class="mb-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md" onclick="toggleMonthlyForm()">创建/隐藏评估表单</button>
         <div id="monthly-form" class="hidden space-y-4">
-          <!-- 评估标题 -->
           <div class="text-center font-mono font-bold text-xl">
             === 第<span id="monthNumber">1</span>个月评估 ===
           </div>
-          <!-- 日期范围 -->
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label for="monthStartDate" class="block text-sm font-medium">开始日期</label>
@@ -142,7 +139,6 @@
               <input type="date" id="monthEndDate" class="w-full border border-gray-300 rounded-md p-2" required>
             </div>
           </div>
-          <!-- 身体指标 -->
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label for="startWeight" class="block text-sm font-medium">起始体重 (kg)</label>
@@ -153,7 +149,6 @@
               <input type="number" id="currentWeight" class="w-full border border-gray-300 rounded-md p-2" step="0.1">
             </div>
           </div>
-          <!-- 静息心率 -->
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label for="startHeartRate" class="block text-sm font-medium">起始静息心率 (bpm)</label>
@@ -164,7 +159,6 @@
               <input type="number" id="currentHeartRate" class="w-full border border-gray-300 rounded-md p-2">
             </div>
           </div>
-          <!-- 训练数据 -->
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label for="trainingDays" class="block text-sm font-medium">本月训练天数 (天)</label>
@@ -183,7 +177,6 @@
               <input type="number" id="fastestPace" class="w-full border border-gray-300 rounded-md p-2" step="0.1">
             </div>
           </div>
-          <!-- 主观评估 -->
           <div>
             <div class="font-bold mb-2">主观评估 (1-5):</div>
             <div class="grid grid-cols-2 gap-4">
@@ -229,7 +222,6 @@
               </div>
             </div>
           </div>
-          <!-- 总结 -->
           <div>
             <div class="font-bold mb-2">总结:</div>
             <div class="mb-2">
@@ -268,17 +260,17 @@
   </div>
   
   <script>
-    // 标签页切换函数
+    // 标签页切换函数，确保只有当前激活的按钮拥有 tab-active 类
     function showTab(tabId) {
-      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('tab-active'));
-      document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.add('hidden');
-        content.classList.remove('block');
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('tab-active'));
+      document.querySelectorAll('.tab-content').forEach(section => {
+        section.classList.add('hidden');
+        section.classList.remove('block');
       });
       document.getElementById('tab-' + tabId).classList.add('tab-active');
       document.getElementById(tabId + '-content').classList.remove('hidden');
       document.getElementById(tabId + '-content').classList.add('block');
-      if(tabId === 'notes'){
+      if (tabId === 'notes') {
         renderOtherNotes();
       }
     }
@@ -340,7 +332,6 @@
         historyList.innerHTML = '<p id="no-records">暂无训练记录</p>';
         return;
       }
-      // 按训练周分组
       const groups = {};
       trainingLogs.forEach(log => {
         const wk = log.week;
@@ -625,11 +616,6 @@
       notesContainer.innerHTML = `<div>${notesText}</div>`;
     }
     
-    // 其他注意事项Tab调用
-    function showOtherNotes() {
-      showTab('notes');
-    }
-    
     /* ----- 数据导出 ----- */
     function exportData() {
       const data = {
@@ -645,9 +631,11 @@
       downloadAnchorNode.remove();
     }
     
+    /* ----- 其他注意事项 ----- */
+    // 直接调用 renderOtherNotes() 即可
+    
     /* ----- 初始化 ----- */
     window.onload = function() {
-      // 默认显示训练计划内容（第一周）
       document.getElementById('training-date').valueAsDate = new Date();
       updatePlan();
       updateHistory();
