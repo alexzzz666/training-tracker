@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>简易半马训练跟踪器（整合周统计、月度评估与其他注意事项）</title>
+  <title>简易半马训练跟踪器（优化版）</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <!-- 引入 Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -19,29 +19,29 @@
   </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
-  <div class="container mx-auto p-6">
-    <div class="bg-white rounded-xl shadow-lg p-8">
+  <div class="container mx-auto p-4 sm:p-6">
+    <div class="bg-white rounded-xl shadow-lg p-6 sm:p-8">
       <!-- 页眉 -->
       <header class="mb-6">
-        <h1 class="text-3xl font-bold text-center text-blue-600">半马训练追踪器</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold text-center text-blue-600">半马训练追踪器</h1>
       </header>
-      <!-- 标签导航 -->
-      <nav class="flex justify-center border-b mb-6">
-        <button id="tab-plan" class="px-4 py-2 mx-2 focus:outline-none tab-active" onclick="showTab('plan')">训练计划</button>
-        <button id="tab-log" class="px-4 py-2 mx-2 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('log')">记录训练</button>
-        <button id="tab-history" class="px-4 py-2 mx-2 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('history')">历史记录</button>
-        <button id="tab-monthly" class="px-4 py-2 mx-2 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('monthly')">月度评估</button>
-        <button id="tab-notes" class="px-4 py-2 mx-2 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showOtherNotes()">其他注意事项</button>
+      <!-- 主导航 -->
+      <nav class="flex flex-wrap justify-center border-b mb-6">
+        <button id="tab-plan" class="px-4 py-2 mx-2 my-1 focus:outline-none tab-active" onclick="showTab('plan')">训练计划</button>
+        <button id="tab-log" class="px-4 py-2 mx-2 my-1 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('log')">记录训练</button>
+        <button id="tab-history" class="px-4 py-2 mx-2 my-1 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('history')">历史记录</button>
+        <button id="tab-monthly" class="px-4 py-2 mx-2 my-1 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('monthly')">月度评估</button>
+        <button id="tab-notes" class="px-4 py-2 mx-2 my-1 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('notes')">其他注意事项</button>
       </nav>
       
       <!-- 标签内容区域 -->
       <!-- 训练计划 -->
-      <section id="plan-content" class="tab-content block">
+      <section id="plan-content" class="tab-content block transition-all duration-300">
         <h2 class="text-2xl font-semibold mb-4">本周训练计划</h2>
         <div class="mb-4">
           <label for="week-select" class="block text-sm font-medium mb-1">选择训练周</label>
           <select id="week-select" class="w-full border border-gray-300 rounded-md p-2" onchange="updatePlan()">
-            <option value="1">第1周 - 建立基础</option>
+            <option value="1" selected>第1周 - 建立基础</option>
             <option value="2">第2周 - 建立基础</option>
             <option value="3">第3周 - 建立基础</option>
             <option value="4">第4周 - 建立基础</option>
@@ -61,7 +61,7 @@
       </section>
       
       <!-- 记录训练 -->
-      <section id="log-content" class="tab-content hidden">
+      <section id="log-content" class="tab-content hidden transition-all duration-300">
         <h2 class="text-2xl font-semibold mb-4">记录训练</h2>
         <form id="training-form" class="space-y-4">
           <div>
@@ -113,15 +113,17 @@
       </section>
       
       <!-- 历史记录与周总结 -->
-      <section id="history-content" class="tab-content hidden">
+      <section id="history-content" class="tab-content hidden transition-all duration-300">
         <h2 class="text-2xl font-semibold mb-4">历史记录与周总结</h2>
         <div id="history-list" class="space-y-4">
           <p id="no-records" class="text-gray-500">暂无训练记录</p>
         </div>
+        <!-- 导出数据按钮 -->
+        <button type="button" class="mt-4 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-md" onclick="exportData()">导出数据</button>
       </section>
       
       <!-- 月度评估 -->
-      <section id="monthly-content" class="tab-content hidden">
+      <section id="monthly-content" class="tab-content hidden transition-all duration-300">
         <h2 class="text-2xl font-semibold mb-4">月度评估</h2>
         <button type="button" class="mb-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md" onclick="toggleMonthlyForm()">创建/隐藏评估表单</button>
         <div id="monthly-form" class="hidden space-y-4">
@@ -254,19 +256,14 @@
         </div>
       </section>
       
-    </div>
-  </div>
-  
-  <!-- 新增其他注意事项区域 -->
-  <div class="container mx-auto p-6">
-    <div class="bg-white rounded-xl shadow-lg p-8 mt-8">
-      <nav class="flex justify-center border-b mb-6">
-        <button id="tab-notes" class="px-4 py-2 mx-2 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showOtherNotes()">其他注意事项</button>
-      </nav>
-      <section id="notes-content" class="tab-content hidden">
+      <!-- 其他注意事项 -->
+      <section id="notes-content" class="tab-content hidden transition-all duration-300">
         <h2 class="text-2xl font-semibold mb-4 text-center">其他注意事项</h2>
-        <div id="notes-container"></div>
+        <div id="notes-container" class="p-4 bg-white rounded shadow border text-sm whitespace-pre-wrap">
+          <!-- 注意事项内容将在这里显示 -->
+        </div>
       </section>
+      
     </div>
   </div>
   
@@ -281,6 +278,9 @@
       document.getElementById('tab-' + tabId).classList.add('tab-active');
       document.getElementById(tabId + '-content').classList.remove('hidden');
       document.getElementById(tabId + '-content').classList.add('block');
+      if(tabId === 'notes'){
+        renderOtherNotes();
+      }
     }
     
     /* ----- 训练计划 ----- */
@@ -530,17 +530,16 @@
 
 每日饮食结构
 训练日饮食
-时间    餐食    食物建议    目的
-早餐    碳水+蛋白    全麦面包/燕麦粥 + 鸡蛋/豆腐 + 水果    提供基础能量
-午餐    均衡餐    糙米/全麦面条 + 瘦肉/鱼/豆制品 + 蔬菜    提供持续能量和营养
-训练前(1-2小时)    简易碳水    香蕉/能量棒/少量饼干    提供训练能量
-训练后(30分钟内)    恢复营养    蛋白质奶昔 + 水果/全麦饼干    促进恢复
-晚餐    低脂均衡    糙米/薯类 + 瘦肉/鱼/豆制品 + 大量蔬菜    补充营养,不过重
+  时间    餐食         食物建议                           目的
+  早餐    碳水+蛋白     全麦面包/燕麦粥 + 鸡蛋/豆腐 + 水果   提供基础能量
+  午餐    均衡餐       糙米/全麦面条 + 瘦肉/鱼/豆制品 + 蔬菜 提供持续能量和营养
+  训练前  简易碳水     香蕉/能量棒/少量饼干                提供训练能量
+  训练后  恢复营养     蛋白质奶昔 + 水果/全麦饼干           促进恢复
+  晚餐    低脂均衡     糙米/薯类 + 瘦肉/鱼/豆制品 + 大量蔬菜   补充营养,不过重
 休息日饮食
-时间    餐食    食物建议    目的
-早餐    均衡营养    全谷物 + 蛋白质 + 水果    提供基础营养
-午餐    正常份量与训练日类似,但可略微减少碳水维持能量平衡
-晚餐    偏轻餐食    蛋白质 + 蔬菜 + 适量碳水避免过度摄入
+  早餐    均衡营养     全谷物 + 蛋白质 + 水果               提供基础营养
+  午餐    正常份量     与训练日类似,但可略微减少碳水         维持能量平衡
+  晚餐    偏轻餐食     蛋白质 + 蔬菜 + 适量碳水               避免过度摄入
 补充营养建议
 
 训练超过60分钟时补充电解质饮料
@@ -552,37 +551,33 @@
 
 训练后10-15分钟静态拉伸
 使用泡沫轴进行肌筋膜放松
-保证充足的睡眠(改善睡眠建议见下)
-每周至少安排2天完全休息日
+保证充足睡眠，每周至少安排2天完全休息日
 
 预防伤病措施
 
-每次训练前5-10分钟动态热身
-循序渐进增加训练量,避免突然增加
-注意跑步姿势,保持核心稳定
+训练前5-10分钟动态热身
+循序渐进增加训练量，避免突然增加
+注意跑步姿势，保持核心稳定
 每3-4个月更换跑鞋
-聆听身体信号,疼痛时及时休息
+聆听身体信号，疼痛时及时休息
 
 训练时间安排
-最佳训练时间
-
-理想时间：晚上18:00-20:00之间
+最佳训练时间：晚上18:00-20:00之间
 原因：
-  此时身体体温较高，肌肉灵活性最佳
-  提供足够时间在睡前让身体冷却下来
-  避免训练太晚影响睡眠质量
+  - 身体体温较高，肌肉灵活性最佳
+  - 提供足够时间在睡前让身体冷却
+  - 避免训练太晚影响睡眠质量
 
 不同训练类型的时间建议
 
-高强度训练（间歇/配速跑）：最晚20:00前开始，确保完成后有2小时冷静期
+高强度训练（间歇/配速跑）：最晚20:00前开始，完成后至少有2小时冷静期
 中等强度训练（常规跑步）：可在20:30前开始
 低强度训练（恢复跑/伸展）：最晚21:00前开始
 
 网球训练后跑步安排
 
-如网球训练后还想进行跑步，至少间隔30分钟恢复
-限制跑步时间在20-30分钟
-以恢复性慢跑为主
+如网球训练后还想跑步，至少间隔30分钟恢复
+限制跑步时间在20-30分钟，以恢复性慢跑为主
 
 改善睡眠建议
 
@@ -591,84 +586,74 @@
 限制晚上摄入咖啡因和酒精
 训练结束后至少2小时再入睡
 睡前1小时不使用电子设备
-考虑睡前冥想或深呼吸练习
-适量补充镁可能有助于改善睡眠质量
+考虑睡前冥想或深呼吸
+适量补充镁
 尝试睡前热水澡，帮助身体降温和放松
 
 装备建议
-必备装备
-
-合适的跑步鞋(建议专业跑步店测试后购买)
-透气排汗的运动服装
-运动袜(防起泡)
-运动水壶
-运动手表/手机APP(记录训练数据)
-
-可选装备
-
-泡沫轴(肌肉放松)
-压缩裤(长距离跑步后恢复)
-反光装备(晚上跑步安全)
-运动腰包/臂包(携带手机等物品)
+必备装备：合适的跑步鞋、透气排汗运动服、运动袜、运动水壶、运动手表/APP
+可选装备：泡沫轴、压缩裤、反光装备、运动腰包/臂包
 
 比赛配速指南
-初次半马建议配速
 
-完赛目标：7:00-7:30/公里（完赛时间约2小时30分钟左右）
+初次半马建议配速：7:00-7:30/公里（完赛约2小时30分钟）
 阶段配速分配：
-  前5公里：略慢于平均配速（7:30-7:45/公里）
-  中间10公里：稳定在目标配速（7:00-7:30/公里）
-  最后6.1公里：根据体能状况，尽量维持或略微提速
+  - 前5公里：略慢（7:30-7:45/公里）
+  - 中间10公里：稳定（7:00-7:30/公里）
+  - 最后6.1公里：根据体能状况调整
 
 训练中配速建议
 
-日常训练跑：8:00-8:30/公里（比赛配速慢30秒-1分钟）
-长距离慢跑：8:30-9:00/公里（比赛配速慢1分钟-1分30秒）
-间歇训练：6:00-6:30/公里（比赛配速快30秒-1分钟）
+日常训练跑：8:00-8:30/公里（慢30秒-1分钟）
+长距离慢跑：8:30-9:00/公里（慢1-1.5分钟）
+间歇训练：6:00-6:30/公里（快30秒-1分钟）
 
 配速调整因素
 
-根据训练进展和感受适当调整
+根据训练进展和感受调整
 考虑比赛当天天气和路线情况
-以舒适完赛为首要目标，而非追求特定时间
+以舒适完赛为首要目标
 
 特别注意事项
 
-过度训练信号：持续疲劳、静息心率升高、睡眠问题加剧、免疫力下降、性能下降
-应对策略：出现过度训练信号时立即减少训练量50%,增加休息日
-天气适应：高温天气减少强度,增加水分摄入
-心理准备：设立阶段性小目标,庆祝每个成就
-紧急调整：如感到关节/肌腱疼痛,立即休息2-3天,必要时就医`;
+过度训练信号：持续疲劳、静息心率升高、睡眠问题、免疫力下降、性能下降
+应对策略：减少训练量50%，增加休息日
+天气适应：高温减少强度，增加水分摄入
+心理准备：设立阶段性小目标，庆祝成就
+紧急调整：如关节或肌腱疼痛，休息2-3天，必要时就医`;
       
-      notesContainer.innerHTML = `<div class="p-4 bg-white rounded shadow border text-sm whitespace-pre-wrap">${notesText}</div>`;
+      notesContainer.innerHTML = `<div>${notesText}</div>`;
     }
     
-    // 其他注意事项Tab
+    // 其他注意事项Tab调用
     function showOtherNotes() {
-      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('tab-active'));
-      document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.add('hidden');
-        content.classList.remove('block');
-      });
-      document.getElementById('tab-notes').classList.add('tab-active');
-      document.getElementById('notes-content').classList.remove('hidden');
-      document.getElementById('notes-content').classList.add('block');
-      renderOtherNotes();
+      showTab('notes');
     }
+    
+    /* ----- 数据导出 ----- */
+    function exportData() {
+      const data = {
+        trainingLogs,
+        monthlyEvaluations
+      };
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+      const downloadAnchorNode = document.createElement('a');
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", "training_data_" + Date.now() + ".json");
+      document.body.appendChild(downloadAnchorNode);
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+    }
+    
+    /* ----- 初始化 ----- */
+    window.onload = function() {
+      // 默认显示训练计划内容（第一周）
+      document.getElementById('training-date').valueAsDate = new Date();
+      updatePlan();
+      updateHistory();
+      renderMonthlyEvaluations();
+      showTab('plan');
+    };
   </script>
-  
-  <!-- 新增其他注意事项Tab区域 -->
-  <div class="container mx-auto p-6">
-    <div class="bg-white rounded-xl shadow-lg p-8 mt-8">
-      <nav class="flex justify-center border-b mb-6">
-        <button id="tab-notes" class="px-4 py-2 mx-2 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showOtherNotes()">其他注意事项</button>
-      </nav>
-      <section id="notes-content" class="tab-content hidden">
-        <h2 class="text-2xl font-semibold mb-4 text-center">其他注意事项</h2>
-        <div id="notes-container"></div>
-      </section>
-    </div>
-  </div>
-  
 </body>
 </html>
