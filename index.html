@@ -40,7 +40,7 @@
         <h2 class="text-2xl font-semibold mb-4">本周训练计划</h2>
         <div class="mb-4">
           <label for="week-select" class="block text-sm font-medium mb-1">选择训练周</label>
-          <select id="week-select" class="w-full border border-gray-300 rounded-md p-2" onchange="updatePlan()">
+          <select id="week-select" class="w-full border border-gray-300 rounded-md p-2">
             <option value="1" selected>第1周 - 适应期</option>
             <option value="2">第2周 - 跑步比例增加</option>
             <option value="3">第3周 - 首次连续跑</option>
@@ -56,7 +56,7 @@
           </select>
         </div>
         <div id="week-plan" class="space-y-4">
-          <!-- 根据选择的周数动态显示内容 -->
+          <!-- 根据选择的周次显示内容 -->
         </div>
       </section>
       
@@ -260,7 +260,7 @@
   </div>
   
   <script>
-    // 定义训练计划数据（仅更新“训练计划”部分内容）
+    // 定义训练计划数据，仅针对“训练计划”标签
     const trainingPlanData = {
       "1": `
 <h4>第1周 - 适应期</h4>
@@ -760,31 +760,31 @@
     </tr>
     <tr>
       <td class="border border-gray-400 px-2 py-1">周四</td>
-      <td class="border border-gray-400 px-2 py-1">轻度间歇</td>
-      <td class="border border-gray-400 px-2 py-1">4x1分钟中速跑 + 2分钟慢跑</td>
-      <td class="border border-gray-400 px-2 py-1">总计25分钟</td>
+      <td class="border border-gray-400 px-2 py-1">配速熟悉</td>
+      <td class="border border-gray-400 px-2 py-1">以目标半马配速跑</td>
+      <td class="border border-gray-400 px-2 py-1">5公里</td>
       <td class="border border-gray-400 px-2 py-1">中</td>
     </tr>
     <tr>
       <td class="border border-gray-400 px-2 py-1">周五</td>
       <td class="border border-gray-400 px-2 py-1">轻度伸展</td>
-      <td class="border border-gray-400 px-2 py-1">全身伸展训练</td>
-      <td class="border border-gray-400 px-2 py-1">25分钟</td>
+      <td class="border border-gray-400 px-2 py-1">全身伸展和放松</td>
+      <td class="border border-gray-400 px-2 py-1">20分钟</td>
       <td class="border border-gray-400 px-2 py-1">低</td>
     </tr>
     <tr>
       <td class="border border-gray-400 px-2 py-1">周六</td>
-      <td class="border border-gray-400 px-2 py-1">网球训练</td>
-      <td class="border border-gray-400 px-2 py-1">常规网球训练</td>
-      <td class="border border-gray-400 px-2 py-1">60分钟</td>
-      <td class="border border-gray-400 px-2 py-1">中</td>
+      <td class="border border-gray-400 px-2 py-1">休息</td>
+      <td class="border border-gray-400 px-2 py-1">完全休息，补充能量</td>
+      <td class="border border-gray-400 px-2 py-1">-</td>
+      <td class="border border-gray-400 px-2 py-1">-</td>
     </tr>
     <tr>
       <td class="border border-gray-400 px-2 py-1">周日</td>
-      <td class="border border-gray-400 px-2 py-1">中距离慢跑</td>
-      <td class="border border-gray-400 px-2 py-1">舒适配速</td>
-      <td class="border border-gray-400 px-2 py-1">6公里</td>
-      <td class="border border-gray-400 px-2 py-1">低中</td>
+      <td class="border border-gray-400 px-2 py-1">半程马拉松比赛</td>
+      <td class="border border-gray-400 px-2 py-1">按计划配速完成比赛</td>
+      <td class="border border-gray-400 px-2 py-1">21.1公里</td>
+      <td class="border border-gray-400 px-2 py-1">中高</td>
     </tr>
   </tbody>
 </table>
@@ -1056,13 +1056,13 @@
       `
     };
 
-    // 更新训练计划内容，根据下拉框选择显示对应周次
+    // 更新训练计划内容：根据选择的周数，更新 #week-plan 内的内容
     function updatePlan() {
       const selectedWeek = document.getElementById("week-select").value;
       const weekPlan = document.getElementById("week-plan");
       weekPlan.innerHTML = trainingPlanData[selectedWeek] || "暂无内容";
     }
-    
+
     /* ----- 记录训练与历史记录 ----- */
     let trainingLogs = JSON.parse(localStorage.getItem('trainingLogs')) || [];
     
@@ -1363,6 +1363,8 @@
     /* ----- 初始化 ----- */
     window.onload = function() {
       document.getElementById('training-date').valueAsDate = new Date();
+      // 添加 change 事件监听，确保选择变化时调用 updatePlan
+      document.getElementById("week-select").addEventListener("change", updatePlan);
       updatePlan();
       updateHistory();
       renderMonthlyEvaluations();
