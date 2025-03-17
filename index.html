@@ -3,16 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>半马训练追踪器</title>
+  <title>简易半马训练跟踪器（整合周统计、月度评估与其他注意事项）</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <!-- 引入 Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <!-- 引入 Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* 自定义一些过渡和激活状态 */
+    /* 自定义激活标签样式 */
     .tab-active {
-      @apply text-blue-600 border-b-2 border-blue-600;
+      background-color: #e0f7ff;
+      color: #2563eb;
+      border-bottom: 2px solid #2563eb;
     }
   </style>
 </head>
@@ -25,10 +27,11 @@
       </header>
       <!-- 标签导航 -->
       <nav class="flex justify-center border-b mb-6">
-        <button id="tab-plan" class="px-4 py-2 mx-2 text-gray-600 hover:text-blue-600 focus:outline-none tab-active" onclick="showTab('plan')">训练计划</button>
+        <button id="tab-plan" class="px-4 py-2 mx-2 focus:outline-none tab-active" onclick="showTab('plan')">训练计划</button>
         <button id="tab-log" class="px-4 py-2 mx-2 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('log')">记录训练</button>
         <button id="tab-history" class="px-4 py-2 mx-2 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('history')">历史记录</button>
         <button id="tab-monthly" class="px-4 py-2 mx-2 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showTab('monthly')">月度评估</button>
+        <button id="tab-notes" class="px-4 py-2 mx-2 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showOtherNotes()">其他注意事项</button>
       </nav>
       
       <!-- 标签内容区域 -->
@@ -254,6 +257,19 @@
     </div>
   </div>
   
+  <!-- 新增其他注意事项区域 -->
+  <div class="container mx-auto p-6">
+    <div class="bg-white rounded-xl shadow-lg p-8 mt-8">
+      <nav class="flex justify-center border-b mb-6">
+        <button id="tab-notes" class="px-4 py-2 mx-2 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showOtherNotes()">其他注意事项</button>
+      </nav>
+      <section id="notes-content" class="tab-content hidden">
+        <h2 class="text-2xl font-semibold mb-4 text-center">其他注意事项</h2>
+        <div id="notes-container"></div>
+      </section>
+    </div>
+  </div>
+  
   <script>
     // 标签页切换函数
     function showTab(tabId) {
@@ -450,13 +466,209 @@
       }
     }
     
-    // 初始化
-    window.onload = function() {
-      document.getElementById('training-date').valueAsDate = new Date();
-      updatePlan();
-      updateHistory();
-      renderMonthlyEvaluations();
-    };
+    /* ----- 其他注意事项 ----- */
+    function renderOtherNotes() {
+      const notesContainer = document.getElementById('notes-container');
+      const notesText = `训练原则
+
+循序渐进：从较短距离开始，逐渐增加跑步时间和距离
+交叉训练：结合网球和力量训练，全面提高体能
+充分休息：防止过度训练和受伤
+营养补充：调整饮食结构，支持训练和恢复
+监测反馈：定期评估进展，及时调整计划
+
+第一个月：建立基础（0-4周）
+训练重点
+
+建立跑步习惯
+发展基础耐力
+正确的跑步姿势和呼吸
+
+第1周：适应跑步感觉，找到舒适节奏
+第2周：增加跑步时间，减少步行间隔
+第3周：持续跑步时间增加到20分钟
+第4周：周日长跑达到35分钟不间断
+
+网球训练安排
+
+保持每周2-3次的网球训练
+网球训练日不额外增加跑步训练
+安排在周三和周六，如需第三次可在周一休息日调整为轻度网球训练
+
+第二个月：提高耐力（5-8周）
+训练重点
+
+增加跑步距离
+引入有氧阈值训练
+增强下肢肌肉耐力
+
+第5周：能够持续跑步40分钟
+第6周：完成第一个5公里跑步
+第7周：适应间歇训练，提高心肺功能
+第8周：完成10公里长跑
+
+第三个月：冲刺准备（9-12周）
+训练重点
+
+增加长跑距离，接近半马距离
+优化配速控制
+比赛策略练习
+
+第9周：能够舒适完成12-14公里
+第10周：适应半马配速
+第11周：达到训练最高距离18公里
+第12周：减量恢复，为半马比赛做准备
+
+饮食计划
+总体营养原则
+
+增加碳水化合物摄入(占总热量的55-60%)
+保证优质蛋白质摄入(占总热量的15-20%)
+适量健康脂肪(占总热量的25-30%)
+充分水合，每天至少2-3升水
+训练前后适当补充营养
+
+每日饮食结构
+训练日饮食
+时间    餐食    食物建议    目的
+早餐    碳水+蛋白    全麦面包/燕麦粥 + 鸡蛋/豆腐 + 水果    提供基础能量
+午餐    均衡餐    糙米/全麦面条 + 瘦肉/鱼/豆制品 + 蔬菜    提供持续能量和营养
+训练前(1-2小时)    简易碳水    香蕉/能量棒/少量饼干    提供训练能量
+训练后(30分钟内)    恢复营养    蛋白质奶昔 + 水果/全麦饼干    促进恢复
+晚餐    低脂均衡    糙米/薯类 + 瘦肉/鱼/豆制品 + 大量蔬菜    补充营养,不过重
+休息日饮食
+时间    餐食    食物建议    目的
+早餐    均衡营养    全谷物 + 蛋白质 + 水果    提供基础营养
+午餐    正常份量与训练日类似,但可略微减少碳水维持能量平衡
+晚餐    偏轻餐食    蛋白质 + 蔬菜 + 适量碳水避免过度摄入
+补充营养建议
+
+训练超过60分钟时补充电解质饮料
+考虑补充omega-3脂肪酸(深海鱼油或亚麻籽油)
+如有需要,适量补充维生素D和镁
+
+恢复与伤病预防
+每日恢复策略
+
+训练后10-15分钟静态拉伸
+使用泡沫轴进行肌筋膜放松
+保证充足的睡眠(改善睡眠建议见下)
+每周至少安排2天完全休息日
+
+预防伤病措施
+
+每次训练前5-10分钟动态热身
+循序渐进增加训练量,避免突然增加
+注意跑步姿势,保持核心稳定
+每3-4个月更换跑鞋
+聆听身体信号,疼痛时及时休息
+
+训练时间安排
+最佳训练时间
+
+理想时间：晚上18:00-20:00之间
+原因：
+  此时身体体温较高，肌肉灵活性最佳
+  提供足够时间在睡前让身体冷却下来
+  避免训练太晚影响睡眠质量
+
+不同训练类型的时间建议
+
+高强度训练（间歇/配速跑）：最晚20:00前开始，确保完成后有2小时冷静期
+中等强度训练（常规跑步）：可在20:30前开始
+低强度训练（恢复跑/伸展）：最晚21:00前开始
+
+网球训练后跑步安排
+
+如网球训练后还想进行跑步，至少间隔30分钟恢复
+限制跑步时间在20-30分钟
+以恢复性慢跑为主
+
+改善睡眠建议
+
+固定睡眠时间表
+创造暗黑、安静、凉爽的睡眠环境
+限制晚上摄入咖啡因和酒精
+训练结束后至少2小时再入睡
+睡前1小时不使用电子设备
+考虑睡前冥想或深呼吸练习
+适量补充镁可能有助于改善睡眠质量
+尝试睡前热水澡，帮助身体降温和放松
+
+装备建议
+必备装备
+
+合适的跑步鞋(建议专业跑步店测试后购买)
+透气排汗的运动服装
+运动袜(防起泡)
+运动水壶
+运动手表/手机APP(记录训练数据)
+
+可选装备
+
+泡沫轴(肌肉放松)
+压缩裤(长距离跑步后恢复)
+反光装备(晚上跑步安全)
+运动腰包/臂包(携带手机等物品)
+
+比赛配速指南
+初次半马建议配速
+
+完赛目标：7:00-7:30/公里（完赛时间约2小时30分钟左右）
+阶段配速分配：
+  前5公里：略慢于平均配速（7:30-7:45/公里）
+  中间10公里：稳定在目标配速（7:00-7:30/公里）
+  最后6.1公里：根据体能状况，尽量维持或略微提速
+
+训练中配速建议
+
+日常训练跑：8:00-8:30/公里（比赛配速慢30秒-1分钟）
+长距离慢跑：8:30-9:00/公里（比赛配速慢1分钟-1分30秒）
+间歇训练：6:00-6:30/公里（比赛配速快30秒-1分钟）
+
+配速调整因素
+
+根据训练进展和感受适当调整
+考虑比赛当天天气和路线情况
+以舒适完赛为首要目标，而非追求特定时间
+
+特别注意事项
+
+过度训练信号：持续疲劳、静息心率升高、睡眠问题加剧、免疫力下降、性能下降
+应对策略：出现过度训练信号时立即减少训练量50%,增加休息日
+天气适应：高温天气减少强度,增加水分摄入
+心理准备：设立阶段性小目标,庆祝每个成就
+紧急调整：如感到关节/肌腱疼痛,立即休息2-3天,必要时就医`;
+      
+      notesContainer.innerHTML = `<div class="p-4 bg-white rounded shadow border text-sm whitespace-pre-wrap">${notesText}</div>`;
+    }
+    
+    // 其他注意事项Tab
+    function showOtherNotes() {
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('tab-active'));
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.add('hidden');
+        content.classList.remove('block');
+      });
+      document.getElementById('tab-notes').classList.add('tab-active');
+      document.getElementById('notes-content').classList.remove('hidden');
+      document.getElementById('notes-content').classList.add('block');
+      renderOtherNotes();
+    }
   </script>
+  
+  <!-- 新增其他注意事项Tab区域 -->
+  <div class="container mx-auto p-6">
+    <div class="bg-white rounded-xl shadow-lg p-8 mt-8">
+      <nav class="flex justify-center border-b mb-6">
+        <button id="tab-notes" class="px-4 py-2 mx-2 text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showOtherNotes()">其他注意事项</button>
+      </nav>
+      <section id="notes-content" class="tab-content hidden">
+        <h2 class="text-2xl font-semibold mb-4 text-center">其他注意事项</h2>
+        <div id="notes-container"></div>
+      </section>
+    </div>
+  </div>
+  
 </body>
 </html>
